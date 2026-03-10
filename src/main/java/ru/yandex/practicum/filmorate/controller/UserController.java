@@ -22,10 +22,7 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-
+        checkName(user);
         user.setId(idCounter++);
         users.put(user.getId(), user);
         log.info("Создан пользователь: {}", user);
@@ -38,13 +35,15 @@ public class UserController {
             log.error("Пользователь с id {} не найден для обновления", user.getId());
             throw new ValidationException("Пользователь не найден");
         }
-
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-
+        checkName(user);
         users.put(user.getId(), user);
         log.info("Пользователь обновлен: {}", user);
         return user;
+    }
+
+    private void checkName(User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
     }
 }

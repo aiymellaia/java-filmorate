@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.validator.MinimumDate;
+
 import java.time.LocalDate;
 
 @Data
@@ -17,6 +19,7 @@ public class Film {
     @Size(max = 200, message = "Описание не должно превышать 200 символов")
     private String description;
 
+    @MinimumDate(message = "Дата релиза — не раньше 28 декабря 1895 года")
     @NotNull(message = "Дата релиза должна быть указана")
     private LocalDate releaseDate;
 

@@ -29,9 +29,9 @@ class FilmorateApplicationTests {
 		Film film = new Film();
 		film.setName("Arrival of a Train");
 		film.setReleaseDate(LocalDate.of(1895, 12, 27));
-		film.setDuration(100);
+		var violations = validator.validate(film);
 
-		assertThrows(ValidationException.class, () -> controller.create(film));
+		assertFalse(violations.isEmpty(), "Валидация должна поймать слишком раннюю дату релиза");
 	}
 
 	@Test
