@@ -82,6 +82,7 @@ public class FilmService {
             }
         }
     }
+
     public Collection<Film> findAll() {
         return filmStorage.findAll();
     }
