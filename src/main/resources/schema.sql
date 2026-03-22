@@ -48,6 +48,5 @@ CREATE TABLE IF NOT EXISTS likes (
 CREATE TABLE IF NOT EXISTS friendships (
     user_id INTEGER REFERENCES users (user_id) ON DELETE CASCADE,
     friend_id INTEGER REFERENCES users (user_id) ON DELETE CASCADE,
-    status BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (user_id, friend_id)
 );

@@ -8,6 +8,8 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,6 +25,13 @@ public class GenreDbStorage {
     public Optional<Genre> findById(int id) {
         String sql = "SELECT * FROM genres WHERE genre_id = ?";
         return jdbcTemplate.query(sql, this::mapRowToGenre, id).stream().findFirst();
+    }
+
+    public List<Genre> findAllByIds(List<Integer> ids) {
+        String inSql = String.join(",", Collections.nCopies(ids.size(), "?"));
+        String sql = String.format("SELECT * FROM genres WHERE genre_id IN (%s)", inSql);
+        return jdbcTemplate.query(sql, ids.toArray(), (rs, rowNum) ->
+                new Genre(rs.getInt("genre_id"), rs.getString("name")));
     }
 
     private Genre mapRowToGenre(ResultSet rs, int rowNum) throws SQLException {

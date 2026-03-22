@@ -69,16 +69,19 @@ public class FilmService {
             LinkedHashSet<Genre> uniqueGenres = film.getGenres().stream()
                     .distinct()
                     .collect(Collectors.toCollection(LinkedHashSet::new));
-
             film.setGenres(uniqueGenres);
 
-            for (Genre genre : uniqueGenres) {
-                genreStorage.findById(genre.getId())
-                        .orElseThrow(() -> new NotFoundException("Жанр с id " + genre.getId() + " не найден"));
+            List<Integer> genreIds = uniqueGenres.stream()
+                    .map(Genre::getId)
+                    .collect(Collectors.toList());
+
+            List<Genre> foundGenres = genreStorage.findAllByIds(genreIds);
+
+            if (foundGenres.size() != genreIds.size()) {
+                throw new NotFoundException("Один или несколько жанров не найдены в базе");
             }
         }
     }
-
     public Collection<Film> findAll() {
         return filmStorage.findAll();
     }

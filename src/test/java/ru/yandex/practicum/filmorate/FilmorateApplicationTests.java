@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
@@ -14,6 +15,8 @@ import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -110,5 +113,30 @@ class FilmorateApplicationTests {
 								.hasFieldOrPropertyWithValue("duration", 110)
 				);
 		assertThat(filmOptional.get().getMpa().getId()).isEqualTo(2);
+	}
+
+	@Test
+	public void testCreateFilmWithMultipleGenres() {
+		Film film = Film.builder()
+				.name("Interstellar")
+				.description("Sci-fi epic")
+				.releaseDate(LocalDate.of(2014, 11, 7))
+				.duration(169)
+				.mpa(new Mpa(1, "G"))
+				.genres(new LinkedHashSet<>(List.of(
+						new Genre(1, "Комедия"),
+						new Genre(2, "Драма")
+				)))
+				.build();
+
+		filmStorage.create(film);
+
+		Optional<Film> savedFilm = filmStorage.findById(film.getId());
+
+		assertThat(savedFilm).isPresent();
+		assertThat(savedFilm.get().getGenres()).hasSize(2);
+		assertThat(savedFilm.get().getGenres())
+				.extracting(Genre::getId)
+				.containsExactlyInAnyOrder(1, 2);
 	}
 }
