@@ -4,14 +4,19 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.validator.MinimumDate;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedHashSet;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Film {
     private Long id;
 
@@ -28,5 +33,7 @@ public class Film {
     @Positive(message = "Продолжительность должна быть положительной")
     private int duration;
 
-    final Set<Long> likes = new HashSet<>();
+    private Mpa mpa;
+
+    private LinkedHashSet<Genre> genres = new LinkedHashSet<>();
 }
